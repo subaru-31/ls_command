@@ -4,18 +4,43 @@ require "etc"
 
 module Ls
   class FileOrDirectory
-    attr_reader :block, :type, :permission, :nlink, :owner, :group, :size, :timestomp, :name
+    attr_reader :name
 
     def initialize(path, name)
-      @block = File.stat(path).blocks
-      @type = shape_file_type(File.stat(path).ftype)
-      @permission = shape_permission(File.stat(path).mode.to_s(8))
-      @nlink = File.stat(path).nlink
-      @owner = Etc.getpwuid(File.stat(path).uid).name
-      @group = Etc.getgrgid(File.stat(path).gid).name
-      @size = File.stat(path).size
-      @timestomp = File.stat(path).mtime.strftime("%-m %e %H:%M")
+      @path = path
       @name = name
+    end
+
+    def block
+      File.stat(@path).blocks
+    end
+
+    def permission
+      shape_permission(File.stat(@path).mode.to_s(8))
+    end
+
+    def type
+      shape_file_type(File.stat(@path).ftype)
+    end
+
+    def nlink
+      File.stat(@path).nlink
+    end
+
+    def owner
+      Etc.getpwuid(File.stat(@path).uid).name
+    end
+
+    def group
+      Etc.getgrgid(File.stat(@path).gid).name
+    end
+
+    def size
+      File.stat(@path).size
+    end
+
+    def timestomp
+      File.stat(@path).mtime.strftime("%-m %e %H:%M")
     end
 
     private
