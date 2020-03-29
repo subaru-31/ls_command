@@ -1,8 +1,8 @@
 # frozen_string_literal: true
+require "optparse"
 
 module Ls
   class Option
-    require "optparse"
 
     attr_reader :argument
     def initialize

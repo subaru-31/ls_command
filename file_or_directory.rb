@@ -53,37 +53,28 @@ module Ls
             permission_integer.split("", 3).last.chars
           end
         permission_array.each do |integer|
-          case integer
-          when "0"
-            permission << "---"
-          when "1"
-            permission << "--x"
-          when "2"
-            permission << "-w-"
-          when "3"
-            permission << "-wx"
-          when "4"
-            permission << "r--"
-          when "5"
-            permission << "r-x"
-          when "6"
-            permission << "rw-"
-          when "7"
-            permission << "rwx"
-          end
+          integers = {
+            "0" => "---",
+            "1" => "--x",
+            "2" => "-w-",
+            "3" => "-wx",
+            "4" => "r--",
+            "5" => "r-x",
+            "6" => "rw-",
+            "7" => "rwx"
+          }
+          permission << integers[integer]
         end
         permission
       end
 
       def shape_file_type(file)
-        case file
-        when "file"
-          "-"
-        when "directory"
-          "d"
-        when "link"
-          "l"
-        end
+        file_types = {
+          "file" => "-",
+          "directory" => "d",
+          "link" => "l"
+        }
+        file_types[file]
       end
   end
 end
