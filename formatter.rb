@@ -13,18 +13,7 @@ module Formatter
 
   def option_l_format(files)
     puts "total #{files.map(&:block).sum}"
-    files.each do |file|
-      output_file_info = +""
-      output_file_info << file.type
-      output_file_info << file.permission
-      output_file_info << "  #{file.nlink}"
-      output_file_info << " #{file.owner}"
-      output_file_info << "  #{file.group}"
-      output_file_info << " #{file.size.to_s.rjust(5, " ")}"
-      output_file_info << "  #{file.timestomp}"
-      output_file_info << " #{file.name}"
-      puts output_file_info
-    end
+    display_file_info(files)
   end
 
   # fileオブジェクトを並び替える
@@ -35,4 +24,20 @@ module Formatter
       files.sort_by { |file| file.name }
     end
   end
+
+  private
+    def display_file_info(files)
+      files.each do |file|
+        output_file_info = +""
+        output_file_info << file.type
+        output_file_info << file.permission
+        output_file_info << "  #{file.nlink}"
+        output_file_info << " #{file.owner}"
+        output_file_info << "  #{file.group}"
+        output_file_info << " #{file.size.to_s.rjust(5, " ")}"
+        output_file_info << "  #{file.timestomp}"
+        output_file_info << " #{file.name}"
+        puts output_file_info
+      end
+    end
 end

@@ -17,24 +17,8 @@ module Ls
       path = Dir.getwd
       argument_type = judge_argument_type(argument)
       files = create_files(path, argument)
-
-      case argument_type
-      when "オプションなし"
-        sort_files = files_sort(files)
-        standard_format(sort_files)
-      when "-alr"
-        sort_files = files_sort(files, reverse: true)
-        option_l_format(sort_files)
-      when "-a"
-        sort_files = files_sort(files)
-        standard_format(sort_files)
-      when "-r"
-        sort_files = files_sort(files, reverse: true)
-        standard_format(sort_files)
-      when "-l"
-        sort_files = files_sort(files)
-        option_l_format(sort_files)
-      end
+      sort_files = files_sort(files, reverse: option_hash(argument_type)["reverse"])
+      display_format(sort_files, format_type: option_hash(argument_type)["format"])
     end
 
     private
@@ -54,22 +38,41 @@ module Ls
         end
       end
 
+      def display_file(argument)
+        if argument["a"]
+          Dir.glob("*", File::FNM_DOTMATCH)
+        else
+          Dir.glob("*")
+        end
+      end
+
       def create_files(path, argument)
         files = []
-        if argument["a"]
-          Dir.chdir(path) do |current_path|
-            Array(Dir.glob("*", File::FNM_DOTMATCH)).each do |file_name|
-              files << Ls::FileOrDirectory.new(current_path + "/#{file_name}", file_name)
-            end
-          end
-        else
-          Dir.chdir(path) do |current_path|
-            Array(Dir.glob("*")).each do |file_name|
-              files << Ls::FileOrDirectory.new(current_path + "/#{file_name}", file_name)
-            end
+        Dir.chdir(path) do |current_path|
+          Array(display_file(argument)).each do |file_name|
+            files << Ls::FileOrDirectory.new(current_path + "/#{file_name}", file_name)
           end
         end
         files
+      end
+
+      def option_hash(argument_type)
+        option = {
+          "オプションなし" => { "reverse" => false, "format" => "standard" },
+          "-alr" => { "reverse" => true, "format" => "l_format" },
+          "-a" => { "reverse" => false, "format" => "standard" },
+          "-r" => { "reverse" => true, "format" => "standard" },
+          "-l" => { "reverse" => true, "format" => "l_format" },
+        }
+        option[argument_type]
+      end
+
+      def display_format(sort_files, format_type:)
+        if format_type == "standard"
+          standard_format(sort_files)
+        elsif format_type == "l_format"
+          option_l_format(sort_files)
+        end
       end
   end
 end

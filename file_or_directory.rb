@@ -44,14 +44,17 @@ module Ls
     end
 
     private
+      def create_permission_array(permission_integer)
+        if permission_integer.size == 6
+          permission_integer.split("", 4).last.chars
+        else
+          permission_integer.split("", 3).last.chars
+        end
+      end
+
       def shape_permission(permission_integer)
+        permission_array = create_permission_array(permission_integer)
         permission = +""
-        permission_array =
-          if permission_integer.size == 6
-            permission_integer.split("", 4).last.chars
-          else
-            permission_integer.split("", 3).last.chars
-          end
         permission_array.each do |integer|
           integers = {
             "0" => "---",
