@@ -23,19 +23,14 @@ module Ls
 
     private
       def judge_argument_type(argument)
-        if !argument["a"] && !argument["r"] && !argument["l"]
-          "オプションなし"
-        elsif argument["a"] && argument["r"] && argument["l"]
-          "-alr"
-        elsif argument["a"]
-          "-a"
-        elsif argument["r"]
-          "-r"
-        elsif argument["l"]
-          "-l"
-        else
-          ""
-        end
+        argument_types = {
+          { "a" => false, "r" => false, "l" => false } => "オプションなし",
+          { "a" => true, "r" => true, "l" => true } => "-alr",
+          { "a" => true, "r" => false, "l" => false } => "-a",
+          { "a" => false, "r" => true, "l" => false } => "-r",
+          { "a" => false, "r" => false, "l" => true } => "-l",
+        }
+        argument_types[argument]
       end
 
       def display_file(argument)

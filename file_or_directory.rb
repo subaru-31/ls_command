@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "etc"
-
 module Ls
   class FileOrDirectory
     attr_reader :name
@@ -52,8 +50,7 @@ module Ls
         end
       end
 
-      def shape_permission(permission_integer)
-        permission_array = create_permission_array(permission_integer)
+      def set_permission(permission_array)
         permission = +""
         permission_array.each do |integer|
           integers = {
@@ -68,6 +65,12 @@ module Ls
           }
           permission << integers[integer]
         end
+        permission
+      end
+
+      def shape_permission(permission_integer)
+        permission_array = create_permission_array(permission_integer)
+        permission = set_permission(permission_array)
         permission
       end
 
